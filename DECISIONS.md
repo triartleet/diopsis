@@ -251,67 +251,119 @@ including `doctor` (§6), tag-driven viewports, and the repo-weight tooling (§7
 ## 11. Decisions
 
 Append-only. Design sections above may be rewritten freely; entries below are the record and
-are not edited in place — supersede instead. Every entry carries a `Scope:`; the
-`decisions-format` marker at the top of this file makes that enforceable rather than
+are not edited in place — corrections supersede. Each entry states its **Decision**, the
+**Why** behind it, any **Consequences** or **Revisit** date, and its **Scope**; the
+`decisions-format` marker at the top of this file makes that shape enforceable rather than
 customary.
 
 ## D-001 — 2026-08-05 — What Diopsis is
-**Scope:** repo
 
-A standalone Storybook visual-regression tool: it screenshots the **already-built static
-Storybook** and diffs each story against committed baselines, running identically locally
-and in CI. No hosted service; baselines live in the consuming repo.
+**Decision:** A standalone Storybook visual-regression tool: it screenshots the
+**already-built static Storybook** and diffs each story against committed baselines,
+running identically locally and in CI. No hosted service; baselines live in the consuming
+repo.
+
+**Why:** the parts that decide whether a visual suite survives are determinism and
+reviewability, not the screenshot itself — and both are lost when the baselines and the
+review surface live outside the repository under test.
+
+**Scope:** repo.
 
 ## D-002 — 2026-08-05 — Name
-**Scope:** repo
 
-**Diopsis** (διόψις — _sight that discerns the difference between two_). npm/repo `diopsis`.
+**Decision:** The tool is **Diopsis** (διόψις — _sight that discerns the difference between
+two_). Package and repository name: `diopsis`.
 
-## D-003 — 2026-08-05 — Repo
-**Scope:** repo
+**Why:** it names what the tool does — seeing the difference between two renders — and the
+name was free on the registry.
 
-GitHub `triartleet/diopsis`, MIT licensed.
+**Scope:** repo.
+
+## D-003 — 2026-08-05 — Repository and licence
+
+**Decision:** GitHub `triartleet/diopsis`, MIT licensed.
+
+**Why:** MIT imposes the least friction on adoption for a developer tool, and matches the
+licence of the author's other published tools.
+
+**Scope:** repo.
 
 ## D-004 — 2026-08-05 — Baselines are a Linux artifact
-**Scope:** repo
 
-Baselines are generated in Linux (Docker locally, or the CI image) so they match the CI
-runner. Strict diff defaults, with `maxDiffPixelRatio` as the first lever if real parity
-issues surface. Corrected the same day: arm64↔amd64 renders differ slightly
-([playwright#13873](https://github.com/microsoft/playwright/issues/13873)), so Diopsis
-records platform+arch per baseline set and warns on mismatch rather than claiming parity.
+**Decision:** Baselines are generated in Linux — in a container locally, or in the CI image
+— so they match the runner that verifies them. Diff defaults stay strict, with
+`maxDiffPixelRatio` as the first lever if real parity problems appear.
+
+**Why:** screenshots are OS-specific; a baseline generated on a developer's machine will not
+match a Linux CI runner, and the mismatch presents as a suite that fails on arrival.
+
+**Consequences:** `arm64` and `amd64` renders also differ slightly
+([playwright#13873](https://github.com/microsoft/playwright/issues/13873)), so a container
+on an ARM host gives near-parity, not guaranteed parity. Diopsis records platform and
+architecture per baseline set and warns on mismatch rather than claiming an equivalence that
+does not hold.
+
+**Scope:** repo.
 
 ## D-005 — 2026-08-05 — Ship the rich report in v1
-**Scope:** repo
 
-The self-contained HTML report (gallery + four diff modes, overlay default) is v1 scope, not
-deferred. **Why:** no git forge renders a pixel-level image diff — GitLab has
-2-up/swipe/onion-skin but no diff highlight
-([gitlab#503214](https://gitlab.com/gitlab-org/gitlab/-/issues/503214)), GitHub likewise —
-so without its own report the tool gives a reviewer no way to see *what* changed.
+**Decision:** The self-contained HTML report — changed-stories gallery, four diff modes with
+the highlight overlay as default — is v1 scope, not deferred.
+
+**Why:** no git forge renders a pixel-level image diff. GitLab offers 2-up, swipe and
+onion-skin but no diff highlight
+([gitlab#503214](https://gitlab.com/gitlab-org/gitlab/-/issues/503214)); GitHub is
+comparable. Without its own report the tool gives a reviewer no way to see *what* changed,
+which is the whole point of a failing visual test.
+
+**Scope:** repo.
 
 ## D-006 — 2026-08-05 — Change-aware capture lands in v2
-**Scope:** repo
 
-Not in v1, but the architecture must not foreclose it: the resolver returns the full capture
-set as data and `summary.json` records it, so v2 adds a filter rather than a redesign (§4).
+**Decision:** Capturing only the stories a change could have affected is deferred to v2. v1
+must not foreclose it: the resolver returns the full capture set as data and `summary.json`
+records it, so v2 adds a filter rather than a redesign (§4).
+
+**Why:** it is the performance story and worth doing properly, but it is also the most
+complex piece in the design — shipping v1 without it keeps the first release small, and
+costs nothing later because the seam is already there.
+
+**Scope:** repo.
 
 ## D-007 — 2026-08-05 — Open source
-**Scope:** repo
 
-Public repository and public npm package, MIT licensed, from the first release.
+**Decision:** Public repository and public npm package, MIT licensed, from the first
+release.
+
+**Why:** the problem is common to every Storybook project, and a tool whose value is
+determinism benefits from being inspectable by the people trusting it.
+
+**Scope:** repo.
 
 ## D-008 — 2026-08-05 — One ignore attribute: `data-diopsis-ignore`
-**Scope:** repo
 
-Regions excluded from comparison are marked with `data-diopsis-ignore`. This is the only
-recognized attribute — the API carries no vendor-specific aliases. `diopsis doctor` reports
-elements carrying other tools' ignore attributes so a migration can be completed cleanly,
-and frozen-clock defaults (§3) mean time-varying content usually needs no annotation at all.
+**Decision:** Regions excluded from comparison are marked with `data-diopsis-ignore`. This
+is the only recognized attribute; the API carries no vendor-specific aliases.
+
+**Why:** an API that recognizes another tool's vocabulary inherits that tool's conventions
+permanently, and every alias is a second thing to document and keep working.
+
+**Consequences:** a project adopting Diopsis renames its existing annotations — a one-line
+search-and-replace. `diopsis doctor` reports elements still carrying another tool's ignore
+attribute so the migration can be finished cleanly, and because the clock is frozen by
+default (§3), annotations that existed only to hide dates can usually be deleted rather than
+renamed.
+
+**Scope:** repo.
 
 ## D-009 — 2026-08-05 — One document: design and decisions together
-**Scope:** repo
 
-The design and the decision record live in one file (`DECISIONS.md`) rather than two — the
-decisions largely restated the design sections, leaving too little unique content to justify
-a second document. Revisit if the two start changing at different rates.
+**Decision:** The design and the decision record live in one file, `DECISIONS.md`, rather
+than two.
+
+**Why:** the decisions largely restated the design sections, leaving too little unique
+content to justify a second document.
+
+**Revisit:** if the design and the decisions start changing at different rates, split them.
+
+**Scope:** repo.
