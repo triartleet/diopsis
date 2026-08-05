@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.cache/
+*.log
+.DS_Store
+
+# local tooling state (may embed absolute paths)
+.etymd/

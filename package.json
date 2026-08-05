@@ -1,0 +1,12 @@
+{
+  "name": "diopsis",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Visual regression for Storybook — diffs the static build; identical locally and in CI.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Alkis Yuv <pgiouvanelis@gmail.com>",
+  "engines": {
+    "node": ">=18"
+  }
+}
