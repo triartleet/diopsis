@@ -1,5 +1,8 @@
 # Diopsis — design proposal v1
 
+<!-- ## D-NNN — YYYY-MM-DD — title · Decision/Why/Scope/Supersedes · append-only, corrections supersede -->
+<!-- decisions-format: 1 -->
+
 Status: **v1 design, approved.** Decisions are recorded at the bottom of this file
 ([§11](#11-decisions)) — this document is both the design and the decision record.
 
@@ -248,27 +251,29 @@ including `doctor` (§6), tag-driven viewports, and the repo-weight tooling (§7
 ## 11. Decisions
 
 Append-only. Design sections above may be rewritten freely; entries below are the record and
-are not edited in place — supersede instead.
+are not edited in place — supersede instead. Every entry carries a `Scope:`; the
+`decisions-format` marker at the top of this file makes that enforceable rather than
+customary.
 
-### D-001 — What Diopsis is
-**Scope:** repo · **Decided:** 2026-08-05
+## D-001 — 2026-08-05 — What Diopsis is
+**Scope:** repo
 
 A standalone Storybook visual-regression tool: it screenshots the **already-built static
 Storybook** and diffs each story against committed baselines, running identically locally
 and in CI. No hosted service; baselines live in the consuming repo.
 
-### D-002 — Name
-**Scope:** repo · **Decided:** 2026-08-05
+## D-002 — 2026-08-05 — Name
+**Scope:** repo
 
 **Diopsis** (διόψις — _sight that discerns the difference between two_). npm/repo `diopsis`.
 
-### D-003 — Repo
-**Scope:** repo · **Decided:** 2026-08-05
+## D-003 — 2026-08-05 — Repo
+**Scope:** repo
 
 GitHub `triartleet/diopsis`, MIT licensed.
 
-### D-004 — Baselines are a Linux artifact
-**Scope:** repo · **Decided:** 2026-08-05
+## D-004 — 2026-08-05 — Baselines are a Linux artifact
+**Scope:** repo
 
 Baselines are generated in Linux (Docker locally, or the CI image) so they match the CI
 runner. Strict diff defaults, with `maxDiffPixelRatio` as the first lever if real parity
@@ -276,8 +281,8 @@ issues surface. Corrected the same day: arm64↔amd64 renders differ slightly
 ([playwright#13873](https://github.com/microsoft/playwright/issues/13873)), so Diopsis
 records platform+arch per baseline set and warns on mismatch rather than claiming parity.
 
-### D-005 — Ship the rich report in v1
-**Scope:** repo · **Decided:** 2026-08-05
+## D-005 — 2026-08-05 — Ship the rich report in v1
+**Scope:** repo
 
 The self-contained HTML report (gallery + four diff modes, overlay default) is v1 scope, not
 deferred. **Why:** no git forge renders a pixel-level image diff — GitLab has
@@ -285,27 +290,27 @@ deferred. **Why:** no git forge renders a pixel-level image diff — GitLab has
 ([gitlab#503214](https://gitlab.com/gitlab-org/gitlab/-/issues/503214)), GitHub likewise —
 so without its own report the tool gives a reviewer no way to see *what* changed.
 
-### D-006 — Change-aware capture lands in v2
-**Scope:** repo · **Decided:** 2026-08-05
+## D-006 — 2026-08-05 — Change-aware capture lands in v2
+**Scope:** repo
 
 Not in v1, but the architecture must not foreclose it: the resolver returns the full capture
 set as data and `summary.json` records it, so v2 adds a filter rather than a redesign (§4).
 
-### D-007 — Open source
-**Scope:** repo · **Decided:** 2026-08-05
+## D-007 — 2026-08-05 — Open source
+**Scope:** repo
 
 Public repository and public npm package, MIT licensed, from the first release.
 
-### D-008 — One ignore attribute: `data-diopsis-ignore`
-**Scope:** repo · **Decided:** 2026-08-05
+## D-008 — 2026-08-05 — One ignore attribute: `data-diopsis-ignore`
+**Scope:** repo
 
 Regions excluded from comparison are marked with `data-diopsis-ignore`. This is the only
 recognized attribute — the API carries no vendor-specific aliases. `diopsis doctor` reports
 elements carrying other tools' ignore attributes so a migration can be completed cleanly,
 and frozen-clock defaults (§3) mean time-varying content usually needs no annotation at all.
 
-### D-009 — One document: design and decisions together
-**Scope:** repo · **Decided:** 2026-08-05
+## D-009 — 2026-08-05 — One document: design and decisions together
+**Scope:** repo
 
 The design and the decision record live in one file (`DECISIONS.md`) rather than two — the
 decisions largely restated the design sections, leaving too little unique content to justify

@@ -1,0 +1,56 @@
+# AGENTS.md
+
+Operating contract for agents working in **Diopsis** — a Storybook visual-regression tool.
+
+## What this repo is
+
+A tool that screenshots a **built static Storybook** and diffs each story against baselines
+committed in the consuming repository. No hosted service, no uploads. The v1 design and
+every decision behind it live in [DECISIONS.md](DECISIONS.md); implementation has not
+started.
+
+## This is a public repository
+
+Everything committed here is permanent and world-readable once published — history
+included, not just the current tree. Before writing anything, know these rules:
+
+- **No environment or machine detail.** No absolute paths, hostnames, OS/tool versions of
+  the author's setup, or local configuration.
+- **No employer or client context.** No organization names, internal project names, ticket
+  identifiers, internal URLs, registries or CI images.
+- **No identity or account configuration.** Author metadata belongs in `LICENSE` and
+  `package.json` — never git identity rules, credentials or publishing mechanics in prose.
+- **No other projects.** This repo knows only about itself.
+- **No competitive positioning.** Describe what Diopsis does and why that matters. Naming
+  another tool is acceptable only as a neutral, verifiable interop fact — never as
+  comparison or market analysis.
+- **No internal deliberation.** No provenance of where the idea came from, no "as
+  discussed", no second person aimed at the author, no metrics measured on a private
+  codebase.
+
+The test for any line: *would this make sense, and be safe, read by a stranger who knows
+nothing about the author, their employer, or their other work?*
+
+## Where things go
+
+One home per fact; the others link to it.
+
+- **README.md** — what this is, why use it, how to start. Written for a user.
+- **DECISIONS.md** — why it is the way it is, and what was ruled out. Written for a future
+  maintainer. Roadmap belongs here, not in the README.
+- Never restate a decision's rationale in the README; state the outcome and link.
+
+## The decision record
+
+`DECISIONS.md` carries `<!-- decisions-format: 1 -->`, so every entry is format-checked.
+
+- Entries are `## D-NNN — YYYY-MM-DD — title`, numbered from D-001, never renumbered.
+- Every entry carries a **`Scope:`** line. This is enforced, not customary.
+- **Append-only:** never edit an entry's substance. Correct it by superseding it with a new
+  entry that names what it replaces. Typos and dead links may be fixed in place.
+- Entries must be self-contained — no references to conversations or people.
+
+## Done =
+
+- `etymd audit` clean.
+- No banned content (above) in any tracked file, including commit messages.
