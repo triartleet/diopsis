@@ -7,3 +7,8 @@ coverage/
 
 # local tooling state (may embed absolute paths)
 .etymd/
+
+# Session scaffolding — internal, never published.
+# Delete both once v1 builds.
+HANDOFF.md
+NEXT-SESSION.md
