@@ -8,5 +8,33 @@
   "author": "Alkis Yuv <pgiouvanelis@gmail.com>",
   "engines": {
     "node": ">=18"
+  },
+  "bin": {
+    "diopsis": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "test": "npm run typecheck && node --test \"test/**/*.test.ts\""
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.50.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@types/node": "22.10.2",
+    "typescript": "7.0.2"
   }
 }

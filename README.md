@@ -20,5 +20,6 @@ team:
   stories first, with a diff-highlight overlay, swipe and onion-skin.
 - **No SaaS** — baselines live in your repo; nothing is uploaded, nothing is metered.
 
-> **Status:** v1 design approved — see [DECISIONS.md](./DECISIONS.md). Implementation has not
-> started; the API and CLI are not final.
+> **Status:** v1 in progress — see [DECISIONS.md](./DECISIONS.md). Capture and comparison run
+> end to end; the report, `init` and `doctor` are not built yet, and the API and CLI are not
+> final. This README is a placeholder until the tool can show its own output.

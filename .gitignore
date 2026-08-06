@@ -8,6 +8,10 @@ coverage/
 # local tooling state (may embed absolute paths)
 .etymd/
 
+# Local end-to-end validation: a real Storybook build and its dependencies.
+# Reproduced from instructions, never committed.
+.validation/
+
 # Session scaffolding — internal, never published.
 # Delete both once v1 builds.
 HANDOFF.md

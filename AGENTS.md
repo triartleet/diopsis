@@ -6,8 +6,20 @@ Operating contract for agents working in **Diopsis** — a Storybook visual-regr
 
 A tool that screenshots a **built static Storybook** and diffs each story against baselines
 committed in the consuming repository. No hosted service, no uploads. The v1 design and
-every decision behind it live in [DECISIONS.md](DECISIONS.md); implementation has not
-started.
+every decision behind it live in [DECISIONS.md](DECISIONS.md).
+
+Layout:
+
+- `src/` — the engine. `cli.ts` dispatches commands, `config.ts` finds and resolves
+  configuration, `story-index.ts` parses Storybook's index, `matrix.ts` expands stories into
+  captures, `server.ts` serves the build; `runner/` generates and runs the Playwright
+  project, and `runtime/` holds the code the generated spec imports.
+- `test/` — `node --test` suites, plus a Storybook-shaped fixture under `test/fixtures/` that
+  needs no Storybook install.
+
+`npm run build` compiles to `dist/`; `npm test` typechecks and runs the suites. End-to-end
+validation runs against a real Storybook build that is reproduced locally and never
+committed — see [DECISIONS.md](DECISIONS.md) D-013.
 
 ## This is a public repository
 

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture preview</title>
+    <style>
+      body { margin: 0; font: 16px/1.5 monospace; background: #0d1117; color: #e6edf3; }
+      .story { padding: 24px; }
+    </style>
+  </head>
+  <body>
+    <div id="error-message" hidden></div>
+    <div id="storybook-root"></div>
+    <script>
+      // A Storybook-shaped preview with no Storybook in it: enough surface to exercise the
+      // resolver, the server and the capture path without a build step.
+      var id = new URLSearchParams(location.search).get('id') || 'unknown';
+      var story = document.createElement('div');
+      story.className = 'story';
+      story.textContent = 'story: ' + id;
+      document.getElementById('storybook-root').appendChild(story);
+    </script>
+  </body>
+</html>

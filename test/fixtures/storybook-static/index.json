@@ -1,0 +1,53 @@
+{
+  "v": 5,
+  "entries": {
+    "button--primary": {
+      "type": "story",
+      "id": "button--primary",
+      "name": "Primary",
+      "title": "Button",
+      "importPath": "./src/Button.stories.tsx",
+      "tags": ["dev", "test"]
+    },
+    "button--secondary": {
+      "type": "story",
+      "id": "button--secondary",
+      "name": "Secondary",
+      "title": "Button",
+      "importPath": "./src/Button.stories.tsx",
+      "tags": ["dev", "test"]
+    },
+    "button--docs": {
+      "type": "docs",
+      "id": "button--docs",
+      "name": "Docs",
+      "title": "Button",
+      "importPath": "./src/Button.stories.tsx",
+      "tags": ["autodocs"]
+    },
+    "banner--wide": {
+      "type": "story",
+      "id": "banner--wide",
+      "name": "Wide",
+      "title": "Banner",
+      "importPath": "./src/Banner.stories.tsx",
+      "tags": ["dev", "diopsis:1280"]
+    },
+    "banner--handheld": {
+      "type": "story",
+      "id": "banner--handheld",
+      "name": "Handheld",
+      "title": "Banner",
+      "importPath": "./src/Banner.stories.tsx",
+      "tags": ["dev", "diopsis:mobile"]
+    },
+    "banner--unsupported": {
+      "type": "story",
+      "id": "banner--unsupported",
+      "name": "Unsupported",
+      "title": "Banner",
+      "importPath": "./src/Banner.stories.tsx",
+      "tags": ["dev", "diopsis:skip"]
+    }
+  }
+}

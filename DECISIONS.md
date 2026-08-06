@@ -367,3 +367,81 @@ content to justify a second document.
 **Revisit:** if the design and the decisions start changing at different rates, split them.
 
 **Scope:** repo.
+
+## D-010 — 2026-08-06 — Validate end to end before building the rest
+
+**Decision:** The first code written was a thin end-to-end slice — resolve stories, serve the
+build, generate a Playwright project, capture, compare — run against a real Storybook build
+before any of §10's later steps were fleshed out. Subsequent steps are built against a loop
+that already runs.
+
+**Why:** nothing in this design had ever executed. §10 sequenced first contact with a real
+Storybook last, which concentrates every unverified assumption — index shape, render root,
+settling behaviour — at the point where five steps of work already depend on them.
+
+**Consequences:** it paid immediately. Storybook 10 emits `subtype` and `exportName` and omits
+`componentPath`, so the index parser tolerates unknown fields rather than asserting a shape;
+and a stabilization guard that looked correct was passing only because network-idle happened
+to outlast the timer it was meant to catch, which a fixture-only test would not have exposed.
+
+**Scope:** repo.
+
+## D-011 — 2026-08-06 — TypeScript config, no transpiler
+
+**Decision:** `diopsis.config.ts` is loaded by Node's own type stripping. `.mjs` and `.js`
+configs are accepted on any supported Node, and the runtime dependency count stays at zero.
+
+**Why:** §8 specifies a TypeScript config and §6 caps dependencies. A bundler or a transpile
+dependency satisfies the first at the cost of the second; type stripping satisfies both.
+
+**Consequences:** the `.ts` form needs Node 22.18 or newer, where type stripping is unflagged;
+below that the loader says so and names the `.mjs` alternative rather than failing obscurely.
+Type stripping erases types but generates no code, so enums, namespaces and parameter
+properties are unusable — in a user's config *and* in this codebase. `erasableSyntaxOnly` in
+`tsconfig.json` turns that from a runtime surprise into a compile error.
+
+**Scope:** repo.
+
+## D-012 — 2026-08-06 — The generated project lives under the tested project
+
+**Decision:** The generated Playwright project is written to `node_modules/.diopsis/project`
+inside the project under test, rather than the operating system's temporary directory as §2
+sketched.
+
+**Why:** `@playwright/test` is a peer dependency, so the generated config and spec must be able
+to resolve it. Node's module resolution skips ancestors already named `node_modules`, which
+puts the project's own `node_modules` on the search path from that location — a temporary
+directory elsewhere on disk has no path back to it.
+
+**Consequences:** the directory is rewritten on every run and removed afterwards, so it holds
+no state between runs. Two concurrent runs in one project would contend for it.
+
+**Scope:** repo.
+
+## D-013 — 2026-08-06 — Two fixtures, only one of them committed
+
+**Decision:** Tests run against a committed Storybook-shaped fixture — a story index and a
+preview document, no Storybook involved. End-to-end validation runs against a real Storybook
+build that is reproduced locally from instructions and never committed.
+
+**Why:** these are different jobs. The committed fixture has to be fast, deterministic and
+installable-free so the suite runs anywhere; validation has to be real enough to disagree with
+the design, which only a genuine build does. Committing the real one would put a framework's
+full dependency tree in a repository that has none.
+
+**Consequences:** the committed fixture cannot catch what only a real build reveals, so it is
+never the sole evidence that something works.
+
+**Scope:** repo.
+
+## D-014 — 2026-08-06 — `diopsis:skip` excludes a story
+
+**Decision:** A story tagged `diopsis:skip` is not captured. A `diopsis:` tag that names
+neither a width nor a configured viewport set produces a warning and falls back to the default
+set.
+
+**Why:** §8 established tags as the override channel, and some stories cannot be usefully
+photographed. The fallback direction matters more than the tag: silently capturing nothing
+because a tag was misspelled reads as "all green" when a story is simply unwatched.
+
+**Scope:** repo.
