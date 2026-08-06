@@ -6,6 +6,24 @@
   "type": "module",
   "license": "MIT",
   "author": "Alkis Yuv <pgiouvanelis@gmail.com>",
+  "keywords": [
+    "storybook",
+    "visual-regression",
+    "visual-testing",
+    "screenshot-testing",
+    "playwright",
+    "snapshot",
+    "ci",
+    "diff"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/triartleet/diopsis.git"
+  },
+  "homepage": "https://github.com/triartleet/diopsis#readme",
+  "bugs": {
+    "url": "https://github.com/triartleet/diopsis/issues"
+  },
   "engines": {
     "node": ">=18"
   },

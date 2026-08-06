@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"
+     role="img" aria-label="Diopsis">
+  <title>Diopsis</title>
+  <desc>Two overlapping renders; the difference between them reads as an eye.</desc>
+
+  <defs>
+    <!-- The lens is exactly the intersection of the two renders: what one has and the
+         other does not. Clipping one circle by the other is that set, drawn literally. -->
+    <clipPath id="right">
+      <circle cx="156" cy="128" r="66" />
+    </clipPath>
+    <linearGradient id="lens" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7bf63" />
+      <stop offset="1" stop-color="#e8951f" />
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="248" height="248" rx="58" fill="#0d1117" />
+  <rect x="4.75" y="4.75" width="246.5" height="246.5" rx="57.25" fill="none"
+        stroke="#2a323d" stroke-width="1.5" />
+
+  <!-- The two renders under comparison. -->
+  <g fill="none" stroke="#3d4753" stroke-width="7">
+    <circle cx="100" cy="128" r="66" />
+    <circle cx="156" cy="128" r="66" />
+  </g>
+
+  <!-- Their difference, which is the whole point of the tool. -->
+  <g clip-path="url(#right)">
+    <circle cx="100" cy="128" r="66" fill="url(#lens)" />
+  </g>
+
+  <circle cx="128" cy="128" r="21" fill="#0d1117" />
+  <circle cx="128" cy="128" r="8.5" fill="#f7bf63" />
+</svg>
