@@ -40,6 +40,16 @@ One home per fact; the others link to it.
   maintainer. Roadmap belongs here, not in the README.
 - Never restate a decision's rationale in the README; state the outcome and link.
 
+**The README follows a shared skeleton** used across these tools — a fixed reading order
+(problem in the reader's words → what it does → visible proof → constraints → fastest path
+to value → depth → reference → meta) with section names left free. Ask the maintainer for
+`README-TEMPLATE.md` before writing the README from scratch. Nothing enforces it; it is a
+checklist, not a gate. The parts that are not negotiable: a centred header block with the
+logo and badges, an SVG logo committed alongside its rendered PNG, the project name
+capitalised in prose but lowercase as an identifier (`Diopsis compares` but `npx diopsis
+run`), the problem stated before the solution, real output shown within the first screen,
+constraints before Install, and `## License` closing the file.
+
 ## The decision record
 
 `DECISIONS.md` carries `<!-- decisions-format: 1 -->`, so every entry is format-checked.
