@@ -90,7 +90,8 @@ export async function generateProject(options: GenerateOptions): Promise<Generat
 
   await writeFile(path.join(dir, 'diopsis.spec.js'), specSource(runtimeUrl), 'utf8');
 
-  const reporters: string[] = [`['line']`];
+  // `dot` for progress; the summary a reviewer reads comes from the Diopsis reporter.
+  const reporters: string[] = [`['dot']`];
   if (options.reporterPath) {
     reporters.push(
       `[${JSON.stringify(options.reporterPath)}, ${JSON.stringify(options.reporterOptions ?? {})}]`,

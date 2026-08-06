@@ -1,0 +1,36 @@
+import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+
+import { loadConfig } from '../config.ts';
+
+export interface ReportOptions {
+  root: string;
+}
+
+/** Platform opener. The report is a plain file, so the desktop default is the right handler. */
+function opener(): { command: string; args: string[] } {
+  if (process.platform === 'darwin') return { command: 'open', args: [] };
+  if (process.platform === 'win32') return { command: 'cmd', args: ['/c', 'start', ''] };
+  return { command: 'xdg-open', args: [] };
+}
+
+export async function reportCommand(options: ReportOptions): Promise<number> {
+  const { config } = await loadConfig(options.root);
+  const reportPath = path.resolve(options.root, config.outputDir, 'report.html');
+
+  if (!existsSync(reportPath)) {
+    process.stderr.write(
+      `No report at ${path.relative(options.root, reportPath)}. Run \`diopsis run\` first.\n`,
+    );
+    return 1;
+  }
+
+  const { command, args } = opener();
+  const child = spawn(command, [...args, reportPath], { stdio: 'ignore', detached: true });
+  child.on('error', () => {
+    process.stdout.write(`${reportPath}\n`);
+  });
+  child.unref();
+  return 0;
+}

@@ -10,10 +10,12 @@ every decision behind it live in [DECISIONS.md](DECISIONS.md).
 
 Layout:
 
-- `src/` — the engine. `cli.ts` dispatches commands, `config.ts` finds and resolves
-  configuration, `story-index.ts` parses Storybook's index, `matrix.ts` expands stories into
-  captures, `server.ts` serves the build; `runner/` generates and runs the Playwright
-  project, and `runtime/` holds the code the generated spec imports.
+- `src/` — the engine. `cli.ts` dispatches, `config.ts` finds and resolves configuration,
+  `story-index.ts` parses Storybook's index, `matrix.ts` expands stories into captures,
+  `server.ts` serves the build, and `reporter.ts` is the Playwright reporter that owns the
+  review surface. `commands/` holds one file per CLI command, `runner/` generates and runs
+  the Playwright project, `runtime/` holds the code the generated spec imports, and
+  `report/` classifies results and renders the self-contained HTML report.
 - `test/` — `node --test` suites, plus a Storybook-shaped fixture under `test/fixtures/` that
   needs no Storybook install.
 

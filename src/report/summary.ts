@@ -1,0 +1,148 @@
+import type { PlannedCapture } from '../runner/generate.ts';
+
+/**
+ * Outcome of one capture.
+ *
+ * These are the states a reviewer filters by (DECISIONS.md §5); they are deliberately not
+ * Playwright's pass/fail, because "a baseline did not exist yet" and "this looks different"
+ * both present as a failing test and need entirely different responses.
+ */
+export type CaptureStatus =
+  | 'unchanged'
+  | 'changed'
+  | 'new'
+  | 'render-failed'
+  | 'failed';
+
+export interface CaptureArtifacts {
+  /** Paths relative to the summary file. */
+  expected?: string;
+  actual?: string;
+  diff?: string;
+}
+
+export interface CaptureResult {
+  storyId: string;
+  storyTitle: string;
+  storyName: string;
+  width: number;
+  status: CaptureStatus;
+  /** Baseline location, relative to the configured snapshot directory. */
+  snapshotPath: string;
+  /** Differing pixel count, when the comparator reported one. */
+  diffPixels?: number;
+  /** Differing pixels as a share of the image. */
+  diffRatio?: number;
+  /** Why a capture failed, when it did. */
+  error?: string;
+  artifacts: CaptureArtifacts;
+}
+
+export interface RunTotals {
+  stories: number;
+  captures: number;
+  unchanged: number;
+  changed: number;
+  new: number;
+  renderFailed: number;
+  failed: number;
+}
+
+export interface RunSummary {
+  /** Format version of this file. */
+  diopsis: 1;
+  createdAt: string;
+  platform: string;
+  arch: string;
+  mode: 'run' | 'update';
+  snapshotDir: string;
+  totals: RunTotals;
+  /** Story ids with at least one capture needing review. */
+  changedStories: string[];
+  /**
+   * Every capture the run planned, in order — not only the interesting ones. Change-aware
+   * capture (v2, DECISIONS.md §4) diffs against this to know what a previous run covered.
+   */
+  captures: CaptureResult[];
+}
+
+const REVIEWABLE: ReadonlySet<CaptureStatus> = new Set<CaptureStatus>([
+  'changed',
+  'new',
+  'render-failed',
+  'failed',
+]);
+
+export function needsReview(status: CaptureStatus): boolean {
+  return REVIEWABLE.has(status);
+}
+
+/** `6798 pixels (ratio 0.03 of all image pixels) are different.` */
+const PIXELS_PATTERN = /([\d,]+) pixels \(ratio ([\d.]+) of all image pixels\) are different/;
+
+const MISSING_PATTERN = /A snapshot doesn't exist at .*, writing actual/;
+
+export interface ClassifyInput {
+  passed: boolean;
+  /** Concatenated error text from the Playwright result. */
+  errorText: string;
+  timedOut?: boolean;
+}
+
+/** Turn a Playwright result into the state a reviewer actually cares about. */
+export function classify(input: ClassifyInput): {
+  status: CaptureStatus;
+  diffPixels?: number;
+  diffRatio?: number;
+} {
+  if (input.passed) return { status: 'unchanged' };
+
+  if (MISSING_PATTERN.test(input.errorText)) return { status: 'new' };
+
+  if (input.errorText.includes('StoryRenderError')) return { status: 'render-failed' };
+
+  const pixels = PIXELS_PATTERN.exec(input.errorText);
+  if (pixels) {
+    return {
+      status: 'changed',
+      diffPixels: Number.parseInt((pixels[1] ?? '0').replace(/,/g, ''), 10),
+      diffRatio: Number.parseFloat(pixels[2] ?? '0'),
+    };
+  }
+
+  // A screenshot comparison that failed without a pixel count still changed something.
+  if (input.errorText.includes('toHaveScreenshot')) return { status: 'changed' };
+
+  return { status: 'failed' };
+}
+
+export function totalsFor(captures: CaptureResult[]): RunTotals {
+  const totals: RunTotals = {
+    stories: new Set(captures.map((c) => c.storyId)).size,
+    captures: captures.length,
+    unchanged: 0,
+    changed: 0,
+    new: 0,
+    renderFailed: 0,
+    failed: 0,
+  };
+  for (const capture of captures) {
+    if (capture.status === 'unchanged') totals.unchanged += 1;
+    else if (capture.status === 'changed') totals.changed += 1;
+    else if (capture.status === 'new') totals.new += 1;
+    else if (capture.status === 'render-failed') totals.renderFailed += 1;
+    else totals.failed += 1;
+  }
+  return totals;
+}
+
+export function changedStoriesOf(captures: CaptureResult[]): string[] {
+  const ids = new Set<string>();
+  for (const capture of captures) if (needsReview(capture.status)) ids.add(capture.storyId);
+  return [...ids].sort();
+}
+
+/** Capture metadata keyed by the Playwright test title that produced it. */
+export function indexPlanByTitle(captures: PlannedCapture[]): Map<string, PlannedCapture> {
+  return new Map(captures.map((capture) => [capture.title, capture]));
+}

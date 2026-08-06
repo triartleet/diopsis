@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { loadConfig } from '../config.ts';
 import { platformToken, resolveMatrix } from '../matrix.ts';
-import { generateProject } from '../runner/generate.ts';
+import { distRoot, generateProject, projectDir } from '../runner/generate.ts';
 import { runPlaywright } from '../runner/execute.ts';
 import { serveStatic } from '../server.ts';
 import { readStoryIndex } from '../story-index.ts';
@@ -65,6 +65,17 @@ export async function runCommand(options: RunOptions): Promise<number> {
       config,
       captures,
       baseUrl: server.url,
+      reporterPath: path.join(distRoot(), 'reporter.js'),
+      reporterOptions: {
+        planPath: path.join(projectDir(options.root), 'plan.json'),
+        outputDir: path.resolve(options.root, config.outputDir),
+        snapshotDir: config.snapshotDir,
+        snapshotDirAbs: path.resolve(options.root, config.snapshotDir),
+        mode: options.update ? 'update' : 'run',
+        platform: process.platform,
+        arch: process.arch,
+        createdAt: new Date().toISOString(),
+      },
     });
 
     const args = [...(options.passthrough ?? [])];

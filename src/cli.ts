@@ -3,17 +3,28 @@ import { realpathSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 
+import { acceptCommand } from './commands/accept.ts';
+import { doctorCommand } from './commands/doctor.ts';
+import { initCommand } from './commands/init.ts';
+import { reportCommand } from './commands/report.ts';
 import { runCommand } from './commands/run.ts';
 
 const USAGE = `diopsis — visual regression for Storybook
 
 Usage
-  diopsis run [options]        verify against committed baselines   (default)
-  diopsis update [options]     regenerate baselines
+  diopsis init                 scaffold a config, git settings and a CI recipe
+  diopsis run                  verify against committed baselines   (default)
+  diopsis update               regenerate baselines
+  diopsis accept [story-id]    adopt the last run's output as the baseline
+  diopsis report               open the last report
+  diopsis doctor               audit the setup for what silently breaks a baseline set
 
 Options
   --grep <text>    only stories whose id contains <text>
   --keep           keep the generated Playwright project
+  --force          overwrite an existing config (init)
+  --lfs            set the baselines up for Git LFS (init)
+  --no-stage       accept without staging the result in git
   --help           show this message
 `;
 
@@ -27,10 +38,12 @@ export async function main(argv: string[]): Promise<number> {
     options: {
       grep: { type: 'string' },
       keep: { type: 'boolean', default: false },
+      force: { type: 'boolean', default: false },
+      lfs: { type: 'boolean', default: false },
+      'no-stage': { type: 'boolean', default: false },
       help: { type: 'boolean', short: 'h', default: false },
     },
     allowPositionals: true,
-    // Anything after `--` is Playwright's.
     strict: true,
   });
 
@@ -51,6 +64,18 @@ export async function main(argv: string[]): Promise<number> {
         keep: values.keep,
         passthrough: positionals,
       });
+    case 'accept':
+      return acceptCommand({
+        root,
+        ...(positionals[0] ? { storyId: positionals[0] } : {}),
+        noStage: values['no-stage'],
+      });
+    case 'init':
+      return initCommand({ root, force: values.force, lfs: values.lfs });
+    case 'doctor':
+      return doctorCommand({ root });
+    case 'report':
+      return reportCommand({ root });
     default:
       process.stderr.write(`Unknown command "${command}".\n\n${USAGE}`);
       return 1;

@@ -445,3 +445,46 @@ photographed. The fallback direction matters more than the tag: silently capturi
 because a tag was misspelled reads as "all green" when a story is simply unwatched.
 
 **Scope:** repo.
+
+## D-015 — 2026-08-06 — Zero runtime dependencies
+
+**Decision:** Diopsis ships with no runtime dependencies at all, superseding §6's allowance for
+a CLI argument parser and a PNG codec. `@playwright/test` remains a peer dependency.
+
+**Why:** neither turned out to be needed. Node's own `parseArgs` covers the CLI, and no image
+is ever decoded: the comparator is Playwright's, the report embeds the PNGs it produced
+without reading them, and repository weight is measured from file sizes.
+
+**Consequences:** a dependency may still be added later if something genuinely requires it —
+this records that none is required *now*, so adding one is a decision rather than a default.
+
+**Scope:** repo.
+
+## D-016 — 2026-08-06 — A scaffolded config must load before anything is installed
+
+**Decision:** The `diopsis.config.ts` written by `diopsis init` types itself with an
+`import type`, not a runtime `defineConfig` import. `defineConfig` remains exported for those
+who prefer it.
+
+**Why:** the first-written form imported `defineConfig` at runtime, which meant the config it
+scaffolded could not be loaded until the package resolved from the project — breaking the
+`npx diopsis init` path it was meant to serve. A type-only import is erased by the same type
+stripping that loads the file, so the config is typed in an editor and free of imports at run
+time.
+
+**Scope:** repo.
+
+## D-017 — 2026-08-06 — The report embeds only what needs looking at
+
+**Decision:** The HTML report inlines images for captures that need review and none for
+unchanged ones, under a total embedding budget; anything past the budget is reported as
+omitted rather than silently dropped.
+
+**Why:** the report has to open from a CI artifact with no server and no adjacent files, which
+means every image it shows is carried inside it. Embedding a whole matrix would make the file
+too heavy to open — and an unchanged capture has nothing to look at.
+
+**Consequences:** a report is not a complete archive of a run. `summary.json` beside it still
+records every capture, including the unchanged ones.
+
+**Scope:** repo.
