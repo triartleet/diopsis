@@ -27,7 +27,7 @@
     "node": ">=18"
   },
   "bin": {
-    "diopsis": "./dist/cli.js"
+    "diopsis": "dist/cli.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
