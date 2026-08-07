@@ -502,3 +502,24 @@ construction. A roadmap is mutable by nature; it needs a file that may be rewrit
 deleted outright. The README still describes only what exists today.
 
 **Scope:** repo.
+
+## D-019 — 2026-08-07 — The first public release is 0.1.0
+
+**Decision:** The first release published to npm is `0.1.0`, not `1.0.0`, despite the design
+in this record being described throughout as v1.
+
+**Why:** v1 names a feature milestone, not a stability promise, and the two are easy to
+conflate on a version number. Everything here has been proven against a Storybook-shaped
+fixture and a locally reproduced build — never against a range of real projects. The config
+shape and `summary.json` are the surfaces most likely to need a breaking change once they
+meet unfamiliar setups, and a 0.x line can make that change at the cost of a minor bump
+rather than a major one. `summary.json` carries its own format version field, so consumers
+of the data have a stability signal that does not depend on the package version.
+
+**Consequences:** the package version and the "v1" of the design vocabulary will disagree
+until 1.0.0 is cut. Prose should name features, not the package version.
+
+**Revisit:** cut 1.0.0 once the config shape has survived contact with real projects
+unchanged.
+
+**Scope:** repo.
