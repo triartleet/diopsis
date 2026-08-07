@@ -1,14 +1,13 @@
 {
-  // Preview cosmetics (stylesheet, font, line height) are contributed GLOBALLY by the local
-  // extension alkisyuv.markdown-preview-style, so no per-repo stylesheet or `markdown.styles`
-  // key belongs here — the webview refuses a path outside an extension contribution or an open
-  // workspace folder anyway. Only the validation rules, which are per-project, live below.
+  // Preview cosmetics come from an editor-level extension, not this repo — so no per-repo
+  // stylesheet or `markdown.styles` key belongs here; the webview refuses a path outside an
+  // extension contribution or an open workspace folder anyway. Only the validation rules,
+  // which are per-project, live below.
   "markdown.validate.referenceLinks.enabled": "ignore",
   "markdown.validate.fileLinks.enabled": "warning",
   "markdown.validate.fragmentLinks.enabled": "warning",
 
-  // Prettier does not govern this repo's markdown, but the user-level settings set
-  // editor.formatOnSave globally with Prettier as the [markdown] formatter, so it would
-  // rewrite these files on save using settings nothing here checks.
+  // Prettier does not govern this repo's markdown; formatOnSave stays off so no external
+  // formatter rewrites these files using settings nothing here checks.
   "[markdown]": { "editor.formatOnSave": false }
 }
