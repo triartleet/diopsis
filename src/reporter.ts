@@ -168,21 +168,39 @@ export default class DiopsisReporter implements Reporter {
     await writeFile(reportPath, await renderReport(summary, this.options.outputDir), 'utf8');
 
     const { totals } = summary;
-    const lines = [
-      '',
-      `Diopsis · ${totals.captures} captures across ${totals.stories} stories · ${summary.platform}-${summary.arch}`,
-      `  unchanged ${totals.unchanged}` +
-        (totals.changed ? `   changed ${totals.changed}` : '') +
-        (totals.new ? `   new ${totals.new}` : '') +
-        (totals.renderFailed ? `   render failed ${totals.renderFailed}` : '') +
-        (totals.failed ? `   failed ${totals.failed}` : ''),
-      '',
-      `  report  ${reportPath}`,
-      `  summary ${summaryPath}`,
+    // Relative to where the command was run: an absolute path is noise to a reader and
+    // machine-specific to anyone the output is pasted to.
+    const show = (target: string): string => path.relative(process.cwd(), target) || target;
+
+    const counts = [
+      `${totals.unchanged} unchanged`,
+      ...(totals.changed ? [`${totals.changed} changed`] : []),
+      ...(totals.new ? [`${totals.new} new`] : []),
+      ...(totals.renderFailed ? [`${totals.renderFailed} failed to render`] : []),
+      ...(totals.failed ? [`${totals.failed} failed`] : []),
     ];
 
+    const lines = ['', `  ${counts.join(' · ')}`, ''];
+
+    for (const capture of ordered) {
+      if (capture.status === 'unchanged') continue;
+      const detail =
+        capture.diffPixels === undefined
+          ? capture.status
+          : `${capture.diffPixels.toLocaleString()} px differ`;
+      lines.push(`  ${capture.status === 'changed' ? '~' : '+'} ${capture.storyId} @${capture.width}  ${detail}`);
+      if (capture.status === 'render-failed' || capture.status === 'failed') {
+        for (const line of (capture.error ?? '').split('\n').slice(0, 2)) {
+          if (line.trim()) lines.push(`      ${line.trim()}`);
+        }
+      }
+    }
+
+    if (counts.length > 1) lines.push('');
+    lines.push(`  report   ${show(reportPath)}`, `  summary  ${show(summaryPath)}`);
+
     if (summary.changedStories.length > 0 && summary.mode === 'run') {
-      lines.push('', '  Accept this run as the new baseline:', '    npx diopsis accept');
+      lines.push('', '  Accept as the new baseline:  npx diopsis accept');
     }
     lines.push('');
     process.stdout.write(lines.join('\n'));
