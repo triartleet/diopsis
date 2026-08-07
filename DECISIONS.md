@@ -488,3 +488,17 @@ too heavy to open — and an unchanged capture has nothing to look at.
 records every capture, including the unchanged ones.
 
 **Scope:** repo.
+
+## D-018 — 2026-08-07 — The roadmap lives in ROADMAP.md; the README points at it
+
+**Decision:** The living what's-next list moves to `ROADMAP.md`, freely edited and pruned;
+the README carries a one-line pointer in its closing block. This supersedes the earlier
+placement rule that sent the roadmap to this decision record.
+
+**Why:** the two documents have opposite natures. This record is append-only — it can state
+*that* something was deferred and why (D-006 does exactly that), but it cannot express "no
+longer planned" except by piling on superseding entries, so a roadmap kept here rots by
+construction. A roadmap is mutable by nature; it needs a file that may be rewritten or
+deleted outright. The README still describes only what exists today.
+
+**Scope:** repo.

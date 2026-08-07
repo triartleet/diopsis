@@ -51,7 +51,9 @@ One home per fact; the others link to it.
 
 - **README.md** — what this is, why use it, how to start. Written for a user.
 - **DECISIONS.md** — why it is the way it is, and what was ruled out. Written for a future
-  maintainer. Roadmap belongs here, not in the README.
+  maintainer. The *decision* to defer something is recorded here.
+- **ROADMAP.md** — the living what's-next list, freely pruned and reordered; the README
+  carries a one-line pointer to it, never the list (D-018).
 - Never restate a decision's rationale in the README; state the outcome and link.
 
 **The README follows a shared skeleton** used across these tools — a fixed reading order
