@@ -101,7 +101,7 @@ change afterwards.
 |---|---|
 | **Captures that do not flake** | A frozen clock, settled fonts and images, animations disabled, locale and timezone pinned — [all on by default](#configuration) |
 | **Baselines that cannot collide** | Platform and architecture in every snapshot path, so a local run can never overwrite what CI reads |
-| **A diff you can actually review** | A self-contained HTML report with [four ways to compare](#everyday-use) each pair, changed stories first |
+| **A diff you can actually review** | A self-contained HTML report with [four ways to compare](#everyday-use) each pair, largest change first, filterable and keyboard-driven |
 | **A machine-readable result** | `summary.json` with every capture and changed story id, for your existing CI bot |
 | **Visible cost** | [`diopsis doctor`](#reference) reports capture count, baseline weight and orphans before they become a problem |
 | **Nothing to sign up for** | Zero runtime dependencies, no uploads, no account, no dashboard |
@@ -193,9 +193,17 @@ the masked element's own bounding box moves.
 
 **Review** — `npx diopsis report` opens the last report, pictured at the top of this page. It
 is one self-contained HTML file, so it also opens straight from a CI artifact with nothing
-beside it. Every capture offers the same pair four ways: **diff-highlight overlay** — the default, because
-it answers "what changed?" with no interaction — plus side-by-side, swipe, and onion-skin.
-Unchanged stories stay collapsed, and each changed story carries the exact command to accept it.
+beside it, and it follows whichever theme your system is set to. Every capture offers the same
+pair four ways: **diff-highlight overlay** — the default, because it answers "what changed?"
+with no interaction — plus side-by-side, swipe, and onion-skin. Click a capture to stop fitting
+it to the page and see it at actual size, which is the only way a one-pixel shift survives
+being looked at. Unchanged stories stay collapsed, the largest change leads, and each changed
+story carries the exact command to accept it.
+
+A few hundred captures are meant to be worked through rather than scrolled past, so the report
+filters by story, remembers which captures you have already ticked off, and gives every story
+its own link to paste into the review. From the keyboard: `/` filters, `j` and `k` move between
+captures, `1`–`4` switch how the pair is compared, and `r` ticks one off.
 
 **Accept** — `npx diopsis accept` adopts the whole run, or `npx diopsis accept card--default`
 adopts one story. Both copy the new images over the baselines and stage them for review.

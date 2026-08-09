@@ -13,6 +13,9 @@ freely — the *decisions* behind deferrals, and everything ruled out, live in
 
 ## Later
 
+- **Contact-sheet overview** — a grid of diff thumbnails above the detail list, click to jump.
+  One capture currently occupies roughly one screen, so a large matrix cannot be taken in at a
+  glance; this is the gap that closes it (deferred in D-020).
 - **Interaction states** — capturing a story after a `play` function or a hover/focus step,
   keyed by story id, when a real need appears (deferred in §9 of the design).
 - **Cross-browser matrix** — WebKit/Firefox beside Chromium, only once the single-browser
