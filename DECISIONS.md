@@ -523,3 +523,39 @@ until 1.0.0 is cut. Prose should name features, not the package version.
 unchanged.
 
 **Scope:** repo.
+
+---
+
+## D-020 — 2026-08-09 — The report compares by width, and colour means one thing at a time
+
+**Decision:** Four rules now govern the review surface. Comparison modes constrain a render's
+**width** and never its height. A colour means exactly one kind of thing: the accent marks
+what the reader selected, and the status palette marks a status — never both. A capture
+classified `changed` is not rendered as an error when its own pixel count is already shown.
+Triage marks — the per-capture "reviewed" tick and its progress count — are browser-local,
+keyed to a single run, and advisory only.
+
+**Why:** the height rule is a correctness matter rather than a cosmetic one. Two renders of a
+story share a natural width, so scaling both by width applies one factor to both; scaling by
+height applies a larger reduction to whichever render grew, and a comparison that silently
+resizes one side understates exactly the change it exists to reveal. The earlier overlay went
+further and stretched the current render onto the baseline's box, so a story that got taller
+displayed as a story that did not. On colour: with the accent also used for status, a filter,
+a badge and a selected button rendered identically, and nothing on the page had priority.
+On errors: a changed capture whose diff is already quantified gained nothing from the raw
+assertion text, and printing it in the failure colour dressed the ordinary outcome up as a
+broken one.
+
+**Consequences:** a tall pair scrolls inside its own frame instead of being shrunk to fit, so
+a full-page capture takes more vertical space than before — the actual-size toggle, not a
+height cap, is what answers "show me the pixels". Triage state is the first client-side state
+the report has kept; it is deliberately not a review state machine, because it cannot travel,
+cannot be shared, and `accept` neither reads nor writes it. Committing a baseline remains the
+only durable record that a change was reviewed (§9), and a reopened report after a fresh run
+starts empty rather than carrying ticks that describe different pixels.
+
+**Revisit:** a contact-sheet overview — thumbnails of every diff above the detail list — was
+considered for this pass and deferred. One capture still occupies roughly one screen, so a
+large matrix cannot be taken in at a glance; that is the gap the overview would close.
+
+**Scope:** repo.
