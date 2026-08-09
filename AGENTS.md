@@ -18,6 +18,12 @@ Layout:
   `report/` classifies results and renders the self-contained HTML report.
 - `test/` — `node --test` suites, plus a Storybook-shaped fixture under `test/fixtures/` that
   needs no Storybook install.
+- `scripts/` — checks wired into one specific moment rather than into `npm test`.
+  `report-check.mjs` renders a report from a synthetic run and drives it in a real browser,
+  because the report's behaviour is client-side JavaScript that the unit suite can only assert
+  was emitted. It runs on demand via `npm run check:report`, and `.githooks/pre-commit.local`
+  runs it only when `src/report/` is staged — no other commit should pay for launching a
+  browser.
 
 `npm run build` compiles to `dist/`; `npm test` typechecks and runs the suites. End-to-end
 validation runs against a real Storybook build that is reproduced locally and never

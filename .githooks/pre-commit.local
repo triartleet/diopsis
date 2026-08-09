@@ -1,5 +1,21 @@
 #!/usr/bin/env sh
+# Project-owned pre-commit guards. etymd never reads or regenerates this file.
+
 # Semantic disclosure review of the staged diff — the companion of commit-msg.local; see there.
 GATE=$(command -v disclosure-gate || true)
-[ -x "$GATE" ] && exec "$GATE" --staged
+if [ -x "$GATE" ]; then
+  "$GATE" --staged || exit 1
+fi
+
+# The report's behaviour is a string of client-side JavaScript that only runs once a browser
+# has parsed it, so the unit suite can assert it was emitted and nothing more. Drive it in a
+# real browser instead — but only on the commits that could have broken it, because the check
+# launches Chromium and no other commit should pay for that.
+#
+# Bypass, with a reason: git commit --no-verify
+if git diff --cached --name-only | grep -qE '^(src/report/|scripts/report-check\.mjs)'; then
+  echo "› report changed — driving it in a browser"
+  npm run --silent check:report || exit 1
+fi
+
 exit 0
