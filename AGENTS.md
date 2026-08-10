@@ -66,7 +66,10 @@ One home per fact; the others link to it.
 visible proof → constraints → fastest path to value → depth → reference → meta — with
 section names left free. Nothing enforces it; it is a checklist, not a gate. The parts that
 are not negotiable: a centred header block with the logo and badges, an SVG logo committed
-alongside its rendered PNG (both under `media/`), every image and repo-file link an absolute
+alongside its rendered PNG (both under `media/`), that logo drawn on a **640×300** canvas and
+rasterised to **1040px wide** — a banner, not a square, because the header renders at a fixed
+520px width and a square one costs the reader the whole first screen before a word of prose —
+every image and repo-file link an absolute
 URL (npm renders the README without resolving relative paths), the project name capitalised
 in prose but lowercase as an identifier (`Diopsis compares` but `npx diopsis run`), the
 problem stated before the solution, real output shown within the first screen — captured

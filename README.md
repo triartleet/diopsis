@@ -1,7 +1,7 @@
 # Diopsis
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/triartleet/diopsis/main/media/diopsis-logo.png" width="520" alt="Diopsis — two overlapping circles whose shared area forms a lens, the difference between two renders">
+  <img src="https://raw.githubusercontent.com/triartleet/diopsis/main/media/diopsis-logo.png" width="520" alt="Diopsis — a baseline render and the current one, and the lens between them showing the row that moved">
   <p>
     <a href="https://www.npmjs.com/package/diopsis"><img src="https://img.shields.io/npm/v/diopsis.svg?label=npm&color=cb3837" alt="npm version"></a>
     <a href="https://github.com/triartleet/diopsis/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/triartleet/diopsis/ci.yml?branch=main&label=CI" alt="CI"></a>
