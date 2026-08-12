@@ -5,8 +5,12 @@ coverage/
 *.log
 .DS_Store
 
-# local tooling state (may embed absolute paths)
-.etymd/
+# Local tooling state (may embed absolute paths). The config is the exception: it records what
+# this repo asks its gates to do, so it has to travel with the repo — a gate choice that lives
+# on one machine is a gate everyone else silently does not have. The `/*` form is required;
+# git will not re-include a file underneath an excluded directory.
+.etymd/*
+!.etymd/config.json
 
 # Local end-to-end validation: a real Storybook build and its dependencies.
 # Reproduced from instructions, never committed.
