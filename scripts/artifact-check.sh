@@ -27,3 +27,4 @@ fi
 
 "$GATE" screen --dir "$WORK" || exit 1
 exit 0
+# etymd:generated pack-v7 f32f6f88fdb02048

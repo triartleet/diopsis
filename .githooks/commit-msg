@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# etymd: content screen — the commit message itself.
+# etymd: the commit message itself — content screen, then format.
 #
 # The staged-content gate reads file bytes and never sees the message, yet a message is as
 # permanently published as any file. No-op where no checker is installed.
@@ -10,6 +10,26 @@ if [ -x "$GATE" ]; then
   "$GATE" screen --message "$1" || exit 1
 fi
 
+# Message format — <type>[(scope)][!]: <summary>. Needs nothing installed, so it always runs.
+subject=$(sed -e '/^#/d' -e '/^[[:space:]]*$/d' "$1" | head -1)
+case "$subject" in
+  "Merge "*|"Revert "*|fixup!*|squash!*|amend!*) ;;
+  *)
+    if ! printf '%s' "$subject" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9._/-]+\))?!?: .+'; then
+      echo "✗ commit message: expected '<type>[(scope)][!]: <summary>'"
+      echo "  got:   $subject"
+      echo "  types: feat fix docs style refactor perf test build ci chore revert"
+      echo "  a '!' after the type or scope marks a breaking change"
+      exit 1
+    fi
+    # Length is advice, not a block: the format is what tooling reads, the length is what a
+    # person reads, and only one of the two can break anything.
+    if [ "${#subject}" -gt 72 ]; then
+      echo "› note: subject is ${#subject} characters; 72 or fewer reads better in git log"
+    fi
+    ;;
+esac
+
 # Repo-owned checks. This file is generated and will be overwritten; `.githooks/commit-msg.local`
 # is yours — etymd never reads, writes, or regenerates it. Put project-specific guards there.
 LOCAL="$(dirname "$0")/commit-msg.local"
@@ -18,3 +38,4 @@ if [ -x "$LOCAL" ]; then
 fi
 
 exit 0
+# etymd:generated pack-v7 fb5f852715904344
